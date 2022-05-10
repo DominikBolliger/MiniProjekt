@@ -14,7 +14,7 @@ public class Reader {
     private Set<Map.Entry<String, Profile.Section>> sections;
     private ArrayList<String> keyList;
     private int size;
-
+    private int stringLength;
 
     Reader(String p){
         this.path = p;
@@ -30,6 +30,7 @@ public class Reader {
             Profile.Section section = e.getValue();
             this.keyList.add(section.getName());
         }
+        this.stringLength = Util.getLongestString(this.keyList);
         Collections.sort(keyList);
     }
 
@@ -39,9 +40,9 @@ public class Reader {
             for (int j = 0; j < 3; j++) {
                 if (String.valueOf(i + j).length() <= String.valueOf(this.size).length()){
                     System.out.print(" ".repeat(3-String.valueOf(i + 1).length()));
-                    if (this.keyList.get(i+j).length() <= stringLength){
+                    if (this.keyList.get(i+j).length() <= this.stringLength){
                         System.out.print(1 + (i + j) + ". " + this.keyList.get(i + j) + " ".repeat(38 - this.keyList.get(i + j).length()));
-                        if (i + j == 103) {
+                        if (i + j == this.size-1) {
                             System.out.println();
                             return;
                         }
@@ -66,6 +67,31 @@ public class Reader {
         }
     }
 
+    public void eraseSection(String sectionName){
+        try {
+            this.ini.remove(sectionName);
+            this.ini.store();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createSection(String sectionName, String keyName, String value){
+        try {
+            this.ini.put(sectionName, keyName, value);
+            ini.store();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getStringLength() {
+        return stringLength;
+    }
+}
+
+
+
 //    public void printFull(){
 //        for (Map.Entry<String, Profile.Section> e : this.sections) {
 //            Profile.Section section = e.getValue();
@@ -79,4 +105,3 @@ public class Reader {
 //            }
 //        }
 //    }
-}

@@ -16,7 +16,7 @@ public class Util {
             ret = "D" + INI_FILE;
         }
         else {
-            System.out.println("There is no OPMS in file..");
+            System.out.println("There is no OPMS.ini file..");
             System.exit(0);
         }
         return ret;
