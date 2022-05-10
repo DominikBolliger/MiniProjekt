@@ -1,9 +1,6 @@
 public class INIReader {
-
-    private static final String INI_FILE = "C:\\OPMS\\Zeag\\opms.ini";
-
     public static void main(String[] args) throws Exception{
-        Reader reader = new Reader(INI_FILE);
+        Reader reader = new Reader(Util.getIniFilePath());
         int choice = -1;
         while(choice != 0){
             reader.printKeys();
