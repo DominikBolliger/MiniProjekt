@@ -1,14 +1,16 @@
 public class Menu {
 
     public static String[] sectionOptions = {
+            "Show section",
+            "Delete Section",
             "Add section",
-            "Change section"
     };
 
     public static String[] keyOptions = {
             "Add Value",
             "Change value",
-            "Delete value"
+            "Delete value",
+            "Back"
     };
 
     public static void printMenu(String[] options){
@@ -18,8 +20,5 @@ public class Menu {
             System.out.println(i + ". " + option);
             i++;
         }
-        System.out.println();
-        System.out.print("Choose your option : ");
     }
-
 }

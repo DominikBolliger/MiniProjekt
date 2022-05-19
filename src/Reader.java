@@ -67,18 +67,21 @@ public class Reader {
         }
     }
 
-    public void eraseSection(String sectionName){
+    public void deleteSection(int key){
+        Profile.Section section = this.ini.get(this.keyList.get(key-1));
+        this.keyList.remove(key-1);
+        this.size--;
         try {
-            this.ini.remove(sectionName);
+            this.ini.remove(section);
             this.ini.store();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void createSection(String sectionName, String keyName, String value){
+    public void addSection(String sectionName){
         try {
-            this.ini.put(sectionName, keyName, value);
+            this.ini.put(sectionName, "keyName", "value");
             ini.store();
         } catch (IOException e) {
             e.printStackTrace();
@@ -88,20 +91,13 @@ public class Reader {
     public int getStringLength() {
         return stringLength;
     }
+
+    public void addKey() {
+    }
+
+    public void changeValue() {
+    }
+
+    public void deleteKey() {
+    }
 }
-
-
-
-//    public void printFull(){
-//        for (Map.Entry<String, Profile.Section> e : this.sections) {
-//            Profile.Section section = e.getValue();
-//            System.out.println("[" + section.getName() + "]");
-//
-//            Set<Map.Entry<String, String>> values = section.entrySet(); /* !!! */
-//            for (Map.Entry<String, String> e2 : values) {
-//                if (!e2.getKey().startsWith("!")){
-//                    System.out.println(e2.getKey() + " = " + e2.getValue());
-//                }
-//            }
-//        }
-//    }
