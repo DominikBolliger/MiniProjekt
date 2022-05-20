@@ -1,4 +1,4 @@
-public class Menu {
+public class CLIoutput {
 
     public static String[] sectionOptions = {
             "Show section",
@@ -13,9 +13,14 @@ public class Menu {
             "Back"
     };
 
+    public static void formatter(int length){
+        System.out.println();
+        System.out.println("-".repeat(length));
+        System.out.println();
+    }
+
     public static void printMenu(String[] options){
         int i = 1;
-        System.out.println();
         for (String option : options){
             System.out.println(i + ". " + option);
             i++;
