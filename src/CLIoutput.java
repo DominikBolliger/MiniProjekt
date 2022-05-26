@@ -7,17 +7,11 @@ public class CLIoutput {
     };
 
     public static String[] keyOptions = {
-            "Add Value",
+            "Add Key",
+            "Delete Key",
             "Change value",
-            "Delete value",
             "Back"
     };
-
-    public static void formatter(int length){
-        System.out.println();
-        System.out.println("-".repeat(length));
-        System.out.println();
-    }
 
     public static void printMenu(String[] options){
         int i = 1;

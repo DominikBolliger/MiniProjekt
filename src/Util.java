@@ -22,16 +22,10 @@ public class Util {
         return ret;
     }
 
-    public static int getLongestString(ArrayList<String> keyList){
-        int index = 0;
-        int elementLength = keyList.get(0).length();
-        for(int i=1; i< keyList.size(); i++) {
-            if(keyList.get(i).length() > elementLength) {
-                index = i; elementLength = keyList.get(i).length();
-            }
-        }
-        return keyList.get(index).length();
+    public static void formatter(int characters){
+        System.out.println();
+        System.out.println("-".repeat(characters));
+        System.out.println();
     }
-
 }
 

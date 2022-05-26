@@ -2,17 +2,16 @@ public class INIReader {
     public static void main(String[] args) throws Exception{
 
         Reader reader = new Reader(Util.getIniFilePath());
-        int stringLength;
         int choice = -1;
         int sectionKey = 0;
+        int lineLength = 0;
         System.out.println();//Formatting
 
         while(choice != 0){
-            reader.printSections();
-            stringLength = reader.getLineLength();
-            CLIoutput.formatter(stringLength);
+            lineLength = reader.printSections();
+            Util.formatter(lineLength);
             CLIoutput.printMenu(CLIoutput.sectionOptions);
-            CLIoutput.formatter(stringLength);
+            Util.formatter(lineLength);
 
             switch (choice = Input.getMenuInput()){
                 case 0:
@@ -23,26 +22,34 @@ public class INIReader {
                     while(choice != 4) {
                         //Show Values from Section
                         if (sectionKey == 0){
-                            reader.printKeysAndValues(sectionKey=Input.getSectionNumber());
+                            do{
+                                sectionKey=Input.getSectionNumber(reader.getSize());
+                            } while (sectionKey <= 0 || sectionKey >= reader.getSize());
+
+                            reader.printKeysAndValues(sectionKey);
+                            Util.formatter(lineLength);
                         } else {
                             reader.printKeysAndValues(sectionKey);
+                            Util.formatter(lineLength);
                         }
-                        CLIoutput.formatter(stringLength);
                         CLIoutput.printMenu(CLIoutput.keyOptions);
-                        CLIoutput.formatter(stringLength);
+                        Util.formatter(lineLength);
                         //New Switch for Value options
                         switch (choice = Input.getMenuInput()) {
                             case 1:
                                 //Add Key to section
                                 reader.addKeyAndValue(sectionKey, Input.getKeyName(), Input.getKeyValue());
+                                Util.formatter(lineLength);
                                 break;
                             case 2:
-                                //Change the Value of a key
-                                reader.changeValue(sectionKey, Input.getKeyNumber(), Input.getKeyValue());
-                                break;
-                            case 3:
                                 //Delete a key (and with it its value)
                                 reader.deleteKey(sectionKey, Input.getKeyNumber());
+                                Util.formatter(lineLength);
+                                break;
+                            case 3:
+                                //Change the Value of a key
+                                reader.changeValue(sectionKey, Input.getKeyNumber(), Input.getKeyValue());
+                                Util.formatter(lineLength);
                                 break;
                             case 4:
                                 //Back to the Section view list
@@ -58,11 +65,13 @@ public class INIReader {
                     break;
                 case 2:
                     //Add a new Section
-                    reader.deleteSection(Input.getSectionNumber());
+                    reader.deleteSection(Input.getSectionNumber(reader.getSize()));
+                    Util.formatter(lineLength);
                     break;
                 case 3:
                     //Delete a section
                     reader.addSection(Input.getSectionName());
+                    Util.formatter(lineLength);
                     break;
                 default:
                     //Exception handling

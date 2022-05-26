@@ -6,16 +6,29 @@ public class Input {
 
     public static int getMenuInput(){
         System.out.print("Choose your option : ");
+        while (!scn.hasNextInt()){
+            System.out.println("Please enter a valid number!");
+            scn = new Scanner(System.in);
+        }
         return scn.nextInt();
     }
 
-    public static int getSectionNumber(){
+    public static int getSectionNumber(int size){
         System.out.print("Pleas enter the Section Number: ");
+        int ret = -1;
+        while (!scn.hasNextInt()){
+            System.out.println("Please enter a valid number!");
+            scn = new Scanner(System.in);
+        }
         return scn.nextInt();
     }
 
     public static int getKeyNumber(){
         System.out.print("Pleas enter the Key Number: ");
+        while (!scn.hasNextInt()){
+            System.out.println("Please enter a valid number!");
+            scn = new Scanner(System.in);
+        }
         return scn.nextInt();
     }
 

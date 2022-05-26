@@ -10,65 +10,76 @@ import java.util.Set;
 public class Reader {
 
     private Wini ini;
-    private String path;
     private Set<Map.Entry<String, Profile.Section>> sections;
     private ArrayList<String> sectionsList;
     private ArrayList<String> keyList;
     private int size;
-    private int stringLength;
-    private int lineLength;
+    private int sectionListSeperator = 30;
 
     /**
      * Constructor for the reader
      *
-     * @param p the path where the INI File is located
+     * @param path the path where the INI File is located
      */
-    Reader(String p){
-        this.path = p;
+    Reader(String path) {
+        this.ini = this.createWini(path);
+        this.sections = this.ini.entrySet();
+        this.size = this.sections.size();
+        this.sectionsList = this.createSectionsList();
+        this.keyList = new ArrayList<>();
+    }
+
+    /**
+     * This method will create our Wini object. Since this has to be done in a try
+     * catch block I wanted to separate it from the constructor for better readability
+     *
+     * @param path the path where the ini file is stored
+     * @return the Wini object
+     */
+    private Wini createWini(String path) {
+        Wini ret = new Wini();
         try {
-            this.ini = new Wini(new File(this.path));
+            ret = new Wini(new File(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.sections = this.ini.entrySet();
-        this.size = this.sections.size();
-        this.sectionsList = new ArrayList<>();
-        this.keyList = new ArrayList<>();
+        return ret;
+    }
+
+    /**
+     * This method takes all the sections and puts them into a ArrayList for better handling.
+     *
+     * @return the sortet array List containing all sections from the ini file
+     */
+    private ArrayList<String> createSectionsList() {
+        ArrayList<String> ret = new ArrayList<>();
         for (Map.Entry<String, Profile.Section> e : this.sections) {
             Profile.Section section = e.getValue();
-            this.sectionsList.add(section.getName());
+            ret.add(section.getName());
         }
-        this.stringLength = Util.getLongestString(this.sectionsList);
-        Collections.sort(sectionsList);
+        Collections.sort(ret);
+        return ret;
     }
 
     /**
      * This method is responsible for printing all the Section names that are present in the INI-File.
      * It is also going to format the Output to 3 Values per line and makes sure all the spaces fit with the other lines
      */
-    public void printSections(){
-        boolean checkLength = true;
-        for (int i = 0; i <= this.size; i+=3) {
+    public int printSections() {
+        ArrayList<String> cliLine = new ArrayList<>();
+        int lineLength = 0;
+        int actualLineLength = 0;
+        for (int i = 0; i < this.sectionsList.size(); i += 3) {
+            cliLine.clear();
             for (int j = 0; j < 3; j++) {
-                if (String.valueOf(i + j).length() <= String.valueOf(this.size).length()){
-                    System.out.print(" ".repeat(3-String.valueOf(i + 1).length()));
-                    if (this.sectionsList.get(i+j).length() <= this.stringLength){
-                        System.out.print(1 + (i + j) + ". " + this.sectionsList.get(i + j) + " ".repeat(38 - this.sectionsList.get(i + j).length()));
-                        if (checkLength){
-                            this.lineLength += 38 - this.sectionsList.get(i + j).length() + 3 + String.valueOf(i+j).length();
-                            if (i == 3){
-                                checkLength = false;
-                            }
-                        }
-                        if (i + j == this.size-1) {
-                            System.out.println();
-                            return;
-                        }
-                    }
-                }
+                cliLine.add(j + i + 1 + ". " + this.sectionsList.get(i + j));
+            }
+            for (int j = 0; j < cliLine.size(); j++) {
+                System.out.printf("%-"+sectionListSeperator+"s", cliLine.get(j));
             }
             System.out.println();
         }
+        return lineLength;
     }
 
     /**
@@ -76,12 +87,12 @@ public class Reader {
      *
      * @param key Index Number to delete the Section from all Lists
      */
-    public void deleteSection(int key){
-        Profile.Section section = this.ini.get(this.sectionsList.get(key-1));
+    public void deleteSection(int key) {
+        Profile.Section section = this.ini.get(this.sectionsList.get(key - 1));
         try {
             this.ini.remove(section);
             this.ini.store();
-            this.sectionsList.remove(key-1);
+            this.sectionsList.remove(key - 1);
             this.size--;
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,9 +104,9 @@ public class Reader {
      *
      * @param sectionName The Name for the new Section
      */
-    public void addSection(String sectionName){
+    public void addSection(String sectionName) {
         try {
-            this.ini.put(sectionName, "keyName", "value");
+            this.ini.put(sectionName, "key 1", "Value 1");
             this.sectionsList.add(sectionName);
             this.size++;
             Collections.sort(sectionsList);
@@ -110,14 +121,14 @@ public class Reader {
      *
      * @param key The index of the selected Section
      */
-    public void printKeysAndValues(int key){
+    public void printKeysAndValues(int key) {
         int i = 1;
         this.keyList.clear();
-        Profile.Section section = this.ini.get(this.sectionsList.get(key-1));
+        Profile.Section section = this.ini.get(this.sectionsList.get(key - 1));
         System.out.println();
-        System.out.println("[" + this.sectionsList.get(key-1) + "]");
+        System.out.println("[" + this.sectionsList.get(key - 1) + "]");
         System.out.println();
-        for (String s:section.keySet()) {
+        for (String s : section.keySet()) {
             if (!s.startsWith("!")) {
                 System.out.println(i + ". " + s + " = " + section.get(s));
                 this.keyList.add(s);
@@ -129,12 +140,12 @@ public class Reader {
     /**
      * Add a new Key to a selected Section. Also adds a value to this new Key
      *
-     * @param key       The Index of the selected Section
-     * @param keyName   The Name for the New Key
-     * @param value     The Value for the new Key
+     * @param key     The Index of the selected Section
+     * @param keyName The Name for the New Key
+     * @param value   The Value for the new Key
      */
     public void addKeyAndValue(int key, String keyName, String value) {
-        Profile.Section section = this.ini.get(this.sectionsList.get(key-1));
+        Profile.Section section = this.ini.get(this.sectionsList.get(key - 1));
         section.put(keyName, value);
         try {
             ini.store();
@@ -146,13 +157,13 @@ public class Reader {
     /**
      * Changes a Value of a selected Key from a Section
      *
-     * @param key           Index for the selected Section
-     * @param keyNumber     index for the Key to be changed
-     * @param value         The new Value for the selected Key
+     * @param key       Index for the selected Section
+     * @param keyNumber index for the Key to be changed
+     * @param value     The new Value for the selected Key
      */
     public void changeValue(int key, int keyNumber, String value) {
-        Profile.Section section = this.ini.get(this.sectionsList.get(key-1));
-        section.put(this.keyList.get(keyNumber-1), value);
+        Profile.Section section = this.ini.get(this.sectionsList.get(key - 1));
+        section.put(this.keyList.get(keyNumber - 1), value);
         try {
             ini.store();
         } catch (IOException e) {
@@ -163,12 +174,12 @@ public class Reader {
     /**
      * Deletes a selected Key from a Section
      *
-     * @param key           Index for the selected Section
-     * @param keyNumber     Index for the Key to delete
+     * @param key       Index for the selected Section
+     * @param keyNumber Index for the Key to delete
      */
     public void deleteKey(int key, int keyNumber) {
-        Profile.Section section = this.ini.get(this.sectionsList.get(key-1));
-        section.remove(this.keyList.get(keyNumber-1));
+        Profile.Section section = this.ini.get(this.sectionsList.get(key - 1));
+        section.remove(this.keyList.get(keyNumber - 1));
         try {
             ini.store();
         } catch (IOException e) {
@@ -176,19 +187,7 @@ public class Reader {
         }
     }
 
-    /**
-     *
-     * @return getter for stringLength
-     */
-    public int getStringLength() {
-        return stringLength;
-    }
-
-    /**
-     *
-     * @return getter for lineLength
-     */
-    public int getLineLength() {
-        return lineLength;
+    public int getSize() {
+        return size;
     }
 }
