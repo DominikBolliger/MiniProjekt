@@ -14,7 +14,7 @@ public class Reader {
     private ArrayList<String> sectionsList;
     private ArrayList<String> keyList;
     private int size;
-    private int sectionListSeperator = 30;
+    private int sectionListSeparator = 40;
 
     /**
      * Constructor for the reader
@@ -65,21 +65,21 @@ public class Reader {
      * This method is responsible for printing all the Section names that are present in the INI-File.
      * It is also going to format the Output to 3 Values per line and makes sure all the spaces fit with the other lines
      */
-    public int printSections() {
+    public void printSections() {
         ArrayList<String> cliLine = new ArrayList<>();
-        int lineLength = 0;
-        int actualLineLength = 0;
         for (int i = 0; i < this.sectionsList.size(); i += 3) {
             cliLine.clear();
             for (int j = 0; j < 3; j++) {
+                if(i+j >= this.sectionsList.size()){
+                    break;
+                }
                 cliLine.add(j + i + 1 + ". " + this.sectionsList.get(i + j));
             }
             for (int j = 0; j < cliLine.size(); j++) {
-                System.out.printf("%-"+sectionListSeperator+"s", cliLine.get(j));
+                System.out.printf("%-"+ sectionListSeparator +"s", cliLine.get(j));
             }
             System.out.println();
         }
-        return lineLength;
     }
 
     /**
@@ -133,6 +133,9 @@ public class Reader {
                 System.out.println(i + ". " + s + " = " + section.get(s));
                 this.keyList.add(s);
                 i++;
+            }
+            else{
+                System.out.println(s + " = " + section.get(s));
             }
         }
     }

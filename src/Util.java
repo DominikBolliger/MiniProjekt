@@ -1,5 +1,4 @@
 import java.io.File;
-import java.util.ArrayList;
 
 public class Util {
 
@@ -22,9 +21,9 @@ public class Util {
         return ret;
     }
 
-    public static void formatter(int characters){
+    public static void formatter(){
         System.out.println();
-        System.out.println("-".repeat(characters));
+        System.out.println();
         System.out.println();
     }
 }
